@@ -1,5 +1,5 @@
 package org.example.expert.domain.user.dto.response;
 
-public record UserSaveResponse(String bearerToken) {
+public record UserSaveResponseDto(String bearerToken) {
 
 }

@@ -5,14 +5,14 @@ import java.util.List;
 
 import org.example.expert.domain.common.dto.AuthUser;
 import org.example.expert.domain.common.exception.InvalidRequestException;
-import org.example.expert.domain.manager.dto.request.ManagerSaveRequest;
-import org.example.expert.domain.manager.dto.response.ManagerResponse;
-import org.example.expert.domain.manager.dto.response.ManagerSaveResponse;
+import org.example.expert.domain.manager.dto.request.ManagerSaveRequestDto;
+import org.example.expert.domain.manager.dto.response.ManagerResponseDto;
+import org.example.expert.domain.manager.dto.response.ManagerSaveResponseDto;
 import org.example.expert.domain.manager.entity.Manager;
 import org.example.expert.domain.manager.repository.ManagerRepository;
 import org.example.expert.domain.todo.entity.Todo;
 import org.example.expert.domain.todo.repository.TodoRepository;
-import org.example.expert.domain.user.dto.response.UserResponse;
+import org.example.expert.domain.user.dto.response.UserResponseDto;
 import org.example.expert.domain.user.entity.User;
 import org.example.expert.domain.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -31,7 +31,8 @@ public class ManagerService {
 	private final TodoRepository todoRepository;
 
 	@Transactional
-	public ManagerSaveResponse saveManager(AuthUser authUser, long todoId, ManagerSaveRequest managerSaveRequest) {
+	public ManagerSaveResponseDto saveManager(AuthUser authUser, long todoId,
+											  ManagerSaveRequestDto managerSaveRequest) {
 
 		// 일정을 만든 유저
 		User user = User.fromAuthUser(authUser);
@@ -52,24 +53,24 @@ public class ManagerService {
 		Manager newManagerUser = new Manager(managerUser, todo);
 		Manager savedManagerUser = managerRepository.save(newManagerUser);
 
-		return new ManagerSaveResponse(
+		return new ManagerSaveResponseDto(
 			savedManagerUser.getId(),
-			new UserResponse(managerUser.getId(), managerUser.getEmail())
+			new UserResponseDto(managerUser.getId(), managerUser.getEmail())
 		);
 	}
 
-	public List<ManagerResponse> getManagers(long todoId) {
+	public List<ManagerResponseDto> findManagers(long todoId) {
 		Todo todo = todoRepository.findById(todoId)
 			.orElseThrow(() -> new InvalidRequestException("Todo not found"));
 
 		List<Manager> managerList = managerRepository.findAllByTodoId(todo.getId());
 
-		List<ManagerResponse> dtoList = new ArrayList<>();
+		List<ManagerResponseDto> dtoList = new ArrayList<>();
 		for (Manager manager : managerList) {
 			User user = manager.getUser();
-			dtoList.add(new ManagerResponse(
+			dtoList.add(new ManagerResponseDto(
 				manager.getId(),
-				new UserResponse(user.getId(), user.getEmail())
+				new UserResponseDto(user.getId(), user.getEmail())
 			));
 		}
 		return dtoList;

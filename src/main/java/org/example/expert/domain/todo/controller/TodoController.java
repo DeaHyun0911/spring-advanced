@@ -2,9 +2,9 @@ package org.example.expert.domain.todo.controller;
 
 import org.example.expert.domain.common.annotation.Auth;
 import org.example.expert.domain.common.dto.AuthUser;
-import org.example.expert.domain.todo.dto.request.TodoSaveRequest;
-import org.example.expert.domain.todo.dto.response.TodoResponse;
-import org.example.expert.domain.todo.dto.response.TodoSaveResponse;
+import org.example.expert.domain.todo.dto.request.TodoSaveRequestDto;
+import org.example.expert.domain.todo.dto.response.TodoResponseDto;
+import org.example.expert.domain.todo.dto.response.TodoSaveResponseDto;
 import org.example.expert.domain.todo.service.TodoService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -25,23 +25,21 @@ public class TodoController {
 	private final TodoService todoService;
 
 	@PostMapping("/todos")
-	public ResponseEntity<TodoSaveResponse> saveTodo(
-		@Auth AuthUser authUser,
-		@Valid @RequestBody TodoSaveRequest todoSaveRequest
+	public ResponseEntity<TodoSaveResponseDto> saveTodo(@Auth AuthUser authUser,
+														@Valid @RequestBody TodoSaveRequestDto dto
 	) {
-		return ResponseEntity.ok(todoService.saveTodo(authUser, todoSaveRequest));
+		return ResponseEntity.ok(todoService.saveTodo(authUser, dto));
 	}
 
 	@GetMapping("/todos")
-	public ResponseEntity<Page<TodoResponse>> getTodos(
-		@RequestParam(defaultValue = "1") int page,
-		@RequestParam(defaultValue = "10") int size
+	public ResponseEntity<Page<TodoResponseDto>> findTodos(@RequestParam(defaultValue = "1") int page,
+														   @RequestParam(defaultValue = "10") int size
 	) {
-		return ResponseEntity.ok(todoService.getTodos(page, size));
+		return ResponseEntity.ok(todoService.findTodos(page, size));
 	}
 
 	@GetMapping("/todos/{todoId}")
-	public ResponseEntity<TodoResponse> getTodo(@PathVariable long todoId) {
-		return ResponseEntity.ok(todoService.getTodo(todoId));
+	public ResponseEntity<TodoResponseDto> findTodo(@PathVariable long todoId) {
+		return ResponseEntity.ok(todoService.findTodo(todoId));
 	}
 }
