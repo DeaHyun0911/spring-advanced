@@ -5,6 +5,7 @@ import org.example.expert.domain.comment.dto.response.CommentSaveResponseDto;
 import org.example.expert.domain.comment.entity.Comment;
 import org.example.expert.domain.comment.repository.CommentRepository;
 import org.example.expert.domain.common.dto.AuthUser;
+import org.example.expert.domain.common.exception.InvalidRequestException;
 import org.example.expert.domain.common.exception.ServerException;
 import org.example.expert.domain.todo.entity.Todo;
 import org.example.expert.domain.todo.repository.TodoRepository;
@@ -40,12 +41,12 @@ class CommentServiceTest {
 		CommentSaveRequestDto request = new CommentSaveRequestDto("contents");
 		AuthUser authUser = new AuthUser(1L, "email", UserRole.USER);
 
-		given(todoRepository.findById(anyLong())).willReturn(Optional.empty());
+		given(todoRepository.findByIdOrElseThrow(todoId)).willThrow(new InvalidRequestException("Todo not found"));
 
 		// when
-		ServerException exception = assertThrows(ServerException.class, () -> {
-													 commentService.saveComment(authUser, todoId, request);
-												 }
+		InvalidRequestException exception = assertThrows(InvalidRequestException.class, () -> {
+															 commentService.saveComment(authUser, todoId, request);
+														 }
 		);
 
 		// then
