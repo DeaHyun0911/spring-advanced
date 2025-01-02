@@ -7,5 +7,4 @@ public record TodoSaveResponseDto(Long id,
 								  String contents,
 								  String weather,
 								  UserResponseDto user) {
-
 }

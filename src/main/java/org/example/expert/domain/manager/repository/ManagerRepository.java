@@ -7,5 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ManagerRepository extends JpaRepository<Manager, Long> {
 
+	default Manager findByIdOrElseThrow(Long id) {
+		return findById(id).orElseThrow(() -> new RuntimeException("Manager not found"));
+	}
+
 	List<Manager> findAllByTodoId(Long todoId);
 }

@@ -20,8 +20,7 @@ public class UserService {
 	private final PasswordEncoder passwordEncoder;
 
 	public UserResponseDto findUser(long userId) {
-		User user = userRepository.findById(userId)
-			.orElseThrow(() -> new InvalidRequestException("User not found"));
+		User user = userRepository.findByIdOrElseThrow(userId);
 		return new UserResponseDto(user.getId(), user.getEmail());
 	}
 
@@ -33,18 +32,13 @@ public class UserService {
 			throw new InvalidRequestException("새 비밀번호는 8자 이상이어야 하고, 숫자와 대문자를 포함해야 합니다.");
 		}
 
-		User user = userRepository.findById(userId)
-			.orElseThrow(() -> new InvalidRequestException("User not found"));
+		User user = userRepository.findByIdOrElseThrow(userId);
 
-		if (passwordEncoder.matches(dto.getNewPassword(),
-									user.getPassword()
-		)) {
+		if (passwordEncoder.matches(dto.getNewPassword(), user.getPassword())) {
 			throw new InvalidRequestException("새 비밀번호는 기존 비밀번호와 같을 수 없습니다.");
 		}
 
-		if (!passwordEncoder.matches(dto.getOldPassword(),
-									 user.getPassword()
-		)) {
+		if (!passwordEncoder.matches(dto.getOldPassword(), user.getPassword())) {
 			throw new InvalidRequestException("잘못된 비밀번호입니다.");
 		}
 
