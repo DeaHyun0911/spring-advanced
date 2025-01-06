@@ -14,4 +14,6 @@ public interface ManagerRepository extends JpaRepository<Manager, Long> {
 
 	@EntityGraph(attributePaths = {"user"})
 	List<Manager> findAllByTodoId(Long todoId);
+
+	boolean existsByTodoIdAndUserId(Long todoId, Long userId);
 }
